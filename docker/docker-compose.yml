@@ -18,6 +18,8 @@ services:
       - ../app:/var/www/html
   db:
     image: percona:5.7
+    ports:
+      - 127.0.0.1:3306:3306
     volumes:
       - ../db_init:/docker-entrypoint-initdb.d
       - ../db_data:/var/lib/mysql
