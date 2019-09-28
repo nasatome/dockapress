@@ -57,3 +57,5 @@ networks:
   proxy:
     external:
       name: ${PROXY_NAME}
+  wordpress_stable_internal:
+    driver: bridge
