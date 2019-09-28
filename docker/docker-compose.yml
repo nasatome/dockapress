@@ -7,12 +7,12 @@ services:
     restart: always
     depends_on:
       - db
-    environment:
-      - WORDPRESS_DB_HOST={$WORDPRESS_DB_HOST}
-      - WORDPRESS_DB_USER={MYSQL_USER}
-      - WORDPRESS_DB_NAME={MYSQL_DATABASE}
-      - WORDPRESS_DB_PASSWORD={MYSQL_PASSWORD}
-      - WORDPRESS_TABLE_PREFIX={$WORDPRESS_TABLE_PREFIX}
+#    environment:
+#      - WORDPRESS_DB_HOST={$WORDPRESS_DB_HOST}
+#      - WORDPRESS_DB_USER={MYSQL_USER}
+#      - WORDPRESS_DB_NAME={MYSQL_DATABASE}
+#      - WORDPRESS_DB_PASSWORD={MYSQL_PASSWORD}
+#      - WORDPRESS_TABLE_PREFIX={$WORDPRESS_TABLE_PREFIX}
     volumes:
       - ../app:/var/www/html
   db:
