@@ -35,7 +35,7 @@ services:
       - ./nginx/conf.d:/etc/nginx/conf.d
       - ./nginx/conf:/etc/nginx/conf
       - ../data/log/nginx:/var/log/nginx
-      - ../app:/var/www/
+      - ../app:/var/www/html
       #- ./plugin-name/trunk/:/var/www/html/wp-content/plugins/plugin-name # Plugin development
       #- ./theme-name/trunk/:/var/www/html/wp-content/themes/theme-name # Theme development
     networks:
