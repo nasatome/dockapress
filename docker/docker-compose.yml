@@ -1,0 +1,60 @@
+version: "3"
+services:
+  php:
+    image: wordpress:php7.2-fpm-alpine
+    networks:
+      - wordpress_stable_internal
+    restart: always
+    depends_on:
+      - db
+    environment:
+      - WORDPRESS_DB_HOST={$WORDPRESS_DB_HOST}
+      - WORDPRESS_DB_USER={MYSQL_USER}
+      - WORDPRESS_DB_NAME={MYSQL_DATABASE}
+      - WORDPRESS_DB_PASSWORD={MYSQL_PASSWORD}
+      - WORDPRESS_TABLE_PREFIX={$WORDPRESS_TABLE_PREFIX}
+  db:
+    image: percona:5.7
+    ports:
+      -127.0.0.1:3306:3306
+    volumes:
+      - ../db_init:/docker-entrypoint-initdb.d
+      - ../db_data:/var/lib/mysql
+      - ../db_xtrabackup:/data/xtrabackup
+      - ../db_mysqldump:/data/mysqldump
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    networks:
+      - wordpress_stable_internal
+    restart: always
+  nginx:
+    image: nginx:1
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/conf:/etc/nginx/conf
+      - ../data/log/nginx:/var/log/nginx
+      - ../app:/var/www/
+      #- ./plugin-name/trunk/:/var/www/html/wp-content/plugins/plugin-name # Plugin development
+      #- ./theme-name/trunk/:/var/www/html/wp-content/themes/theme-name # Theme development
+    networks:
+      - wordpress_stable_internal
+      - proxy
+    labels:
+      - "traefik.backend=nginx_${COMPOSE_PROJECT_NAME}"
+      - "traefik.port=80"
+      - 'traefik.frontend.rule=Host:${FRONTEND_RULE}'
+      - "traefik.frontend.passHostHeader=true"
+      - "traefik.enable=true"
+      - "traefik.docker.network=${PROXY_NAME}"
+    restart: always
+    depends_on:
+      - db
+    command: bash -c "usermod -u 1000 www-data && groupmod -g 1000 www-data && nginx -c /etc/nginx/conf/nginx.conf"
+  networks:
+    proxy:
+      external:
+        name: ${PROXY_NAME}
