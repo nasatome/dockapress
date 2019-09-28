@@ -52,7 +52,8 @@ services:
     depends_on:
       - db
     command: bash -c "usermod -u 1000 www-data && groupmod -g 1000 www-data && nginx -c /etc/nginx/conf/nginx.conf"
-  networks:
-    proxy:
-      external:
-        name: ${PROXY_NAME}
+
+networks:
+  proxy:
+    external:
+      name: ${PROXY_NAME}
